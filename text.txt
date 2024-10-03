@@ -1,0 +1,1179 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cost_sorting_nbr.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/24 01:40:32 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/24 02:26:27 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+static void	rotation_b_for_insertion_nbr(t_stack *stack_b, t_cost *c, int nbr)
+{
+	int	place;
+	int	len;
+
+	place = find_insert_position(stack_b, nbr);
+	len = stack_length(stack_b);
+	if (place <= len / 2)
+	{
+		c->b_rotations = place;
+		c->doing_what_b = ROTATE;
+	}
+	else
+	{
+		c->b_rotations = len - place;
+		c->doing_what_b = REVERSE_ROTATE;
+	}
+}
+
+static void	rotation_a_for_nbr_to_top(t_stack *stack_a, int nbr, t_cost *c)
+{
+	int	place;
+	int	len;
+
+	place = stackfind(stack_a, nbr);
+	len = stack_length(stack_a);
+	if (place < len / 2)
+	{
+		c->doing_what_a = ROTATE;
+		c->a_rotations = place;
+	}
+	else
+	{
+		c->doing_what_a = REVERSE_ROTATE;
+		c->a_rotations = len - place;
+	}
+}
+
+void	cost_sorting_nbr(t_stack *stack_a, t_stack *stack_b, int nbr, t_cost *c)
+{
+	rotation_a_for_nbr_to_top(stack_a, nbr, c);
+	rotation_b_for_insertion_nbr(stack_b, c, nbr);
+	if (c->doing_what_a == c->doing_what_b)
+	{
+		if (c->a_rotations > c->b_rotations)
+			c->cost = c->a_rotations;
+		else
+			c->cost = c->b_rotations;
+	}
+	else
+		c->cost = c->a_rotations + c->b_rotations;
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   find_insert_position.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/24 01:55:46 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/24 02:15:59 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+static int	find_nbr_lower_closer(t_stack *stack, int nbr)
+{
+	int		lower_closer;
+
+	if (!stack->next)
+		return (-1);
+	lower_closer = 0;
+	while (stack)
+	{
+		if (stack->value < nbr && stack->value > lower_closer)
+			lower_closer = stack->value;
+		stack = stack->next;
+	}
+	return (lower_closer);
+}
+
+int	find_insert_position(t_stack *stack_b, int nbr)
+{
+	int		minimum;
+	int		maximum;
+	int		cost;
+
+	if (!stack_b)
+		return (0);
+	minimum = find_minimum(stack_b);
+	maximum = find_maximum(stack_b);
+	if (nbr > maximum)
+		return (stackfind(stack_b, maximum));
+	else if (minimum < nbr && nbr < maximum)
+		return (stackfind(stack_b, find_nbr_lower_closer_to_nbr(stack_b, nbr)));
+	else
+		return (stackfind(stack_b, maximum));
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_loop.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/24 01:14:55 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/24 01:15:38 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+void	push_back_to_a(t_stack **stack_a, t_stack **stack_b)
+{
+	int	max;
+
+	while (*stack_b)
+	{
+		max = find_maximum(*stack_b);
+		while ((*stack_b)->value != max)
+		{
+			if (stackfind(*stack_b, max) <= stack_length(*stack_b) / 2)
+				do_rb(stack_b);
+			else
+				do_rrb(stack_b);
+		}
+		do_pa(stack_a, stack_b);
+	}
+}
+
+void	update_highest_tryable_if_needed(t_stack **stack_b, t_search *search)
+{
+	int	current_length;
+
+	if (*stack_b)
+	{
+		current_length = stack_length(*stack_b);
+		if (current_length / 3 < search->highest_tryable
+			&& search->highest_tryable <= 500)
+			search->highest_tryable += 10;
+	}
+}
+
+int	main_loop(t_stack **stack_a, t_stack **stack_b)
+{
+	t_search	*find;
+
+	find = initialize_search();
+	*stack_b = NULL;
+	while (*stack_a)
+	{
+		update_search(find, find->range, find->approx, find->highest_tryable);
+		smart_moves(stack_a, stack_b);
+		update_highest_tryable_if_needed(stack_b, find);
+		if (!stack_a || !(*stack_a) || !(*stack_a)->next)
+			break ;
+	}
+	push_back_to_a(stack_a, stack_b);
+	free_in_range(find->nbrs_list);
+	clear_stack(stack_b);
+	ft_safe_free((void **)&find);
+	return (0);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   searching_best_cost.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/24 01:33:06 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/24 01:44:45 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+static void	evaluate_firsts_nbrs(t_stack *a, t_stack *b, t_cost *c, int howmuch)
+{
+	int		i;
+	int		len;
+	t_cost	*memo;
+
+	len = stack_length(a);
+	if (len < howmuch)
+		howmuch = len;
+	i = 0;
+	while (i < howmuch && i < stack_length(a))
+	{
+		cost_sorting_nbr(a, b, get_nth_node(a, i)->value, memo);
+		if (memo->cost < c->cost)
+			*c = *memo;
+		i++;
+	}
+}
+
+static void	*evaluate_lasts_nbrs(t_stack *a, t_stack *b, t_cost *c, int howmuch)
+{
+	int		i;
+	int		len;
+	t_cost	*memo;
+
+	len = stack_length(a);
+	if (len < howmuch)
+		return ;
+	i = len - howmuch;
+	while (i < len)
+	{
+		cost_sorting_nbr(a, b, get_nth_node(a, i)->value, memo);
+		if (memo->cost < c->cost)
+			*c = *memo;
+		i++;
+	}
+}
+
+t_cost	*cost_push_best(t_stack **a, t_stack **b)
+{
+	t_cost	*cost;
+	t_cost	*memo;
+	int		len;
+
+	cost = ft_safe_malloc(sizeof(t_cost));
+	memo = ft_safe_malloc(sizeof(t_cost));
+	if (!cost || !memo)
+	{
+		ft_safe_free((void **)&cost);
+		ft_safe_free((void **)&memo);
+		return (NULL);
+	}
+	cost->cost = INT_MAX;
+	len = stack_length(*a);
+	evaluate_firsts_nbrs(*a, *b, cost, memo);
+	if (len > 10)
+		evaluate_lasts_nbrs(*a, *b, cost, memo);
+	ft_safe_free((void **)&memo);
+	return (cost);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   smart_moves.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/24 01:23:45 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/24 01:25:38 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+void	doing_the_moves(t_stack **stack_a, t_stack **stack_b, t_cost *cost)
+{
+	if (!cost)
+		return ;
+	if (cost->doing_what_a == ROTATE && cost->doing_what_b == ROTATE)
+		double_rotate(stack_a, stack_b, cost);
+	else if (cost->doing_what_a == REVERSE_ROTATE
+		&& cost->doing_what_b == REVERSE_ROTATE)
+		rev_double_rotate(stack_a, stack_b, cost);
+	else
+	{
+		while (cost->a_rotations-- > 0)
+			do_which_rotation(stack_a, cost->doing_what_a);
+		while (cost->b_rotations-- > 0)
+			do_which_rotation(stack_b, cost->doing_what_b);
+	}
+	do_pb(stack_a, stack_b);
+}
+
+void	smart_moves(t_stack **stack_a, t_stack **stack_b)
+{
+	t_cost	*cost;
+
+	cost = cost_push_best(stack_a, stack_b);
+	doing_the_moves(stack_a, stack_b, cost);
+	ft_safe_free((void **)&cost);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   do_which_rotation.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/17 19:19:51 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/19 19:15:39 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+void	do_which_rotation(t_stack **stack_a, int rotation)
+{
+	if (rotation == ROTATE)
+	{
+		do_ra(stack_a);
+	}
+	else
+	{
+		do_rra(stack_a);
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mini_sorts.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 22:07:32 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/11 16:39:03 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+int	end_sort_three_a(t_stack **stack_a, t_stack **stack_b, int y, int z)
+{
+	if (y < z && z < (*stack_a)->value)
+	{
+		do_pb(stack_a, stack_b);
+		do_pb(stack_a, stack_b);
+		do_ra(stack_a);
+		do_pa(stack_a, stack_b);
+		do_pa(stack_a, stack_b);
+		do_rra(stack_a);
+	}
+	else if ((*stack_a)->value < z && z < y)
+	{
+		do_pb(stack_a, stack_b);
+		do_ra(stack_a);
+		do_pb(stack_a, stack_b);
+		do_rra(stack_a);
+		do_pa(stack_a, stack_b);
+		do_pa(stack_a, stack_b);
+	}
+	return (0);
+}
+
+int	sort_three_a(t_stack **stack_a, t_stack **stack_b)
+{
+	int	y;
+	int	z;
+
+	y = (*stack_a)->next->value;
+	z = (*stack_a)->next->next->value;
+	if ((*stack_a)->value < y && y < z)
+		return (0);
+	else if (y < (*stack_a)->value && (*stack_a)->value < z)
+		do_sa(*stack_a);
+	else if (z < y && y < (*stack_a)->value)
+	{
+		do_pb(stack_a, stack_b);
+		rotate_n_time(stack_a, 2, STACK_A);
+		do_pa(stack_a, stack_b);
+		reverse_rotate_n_time(stack_a, 2, STACK_A);
+	}
+	else
+		end_sort_three_a(stack_a, stack_b, y, z);
+	return (0);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   operations_severals.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 19:03:32 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/16 02:44:22 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+void	rotate_n_time(t_stack **stack, int n, int which_stack)
+{
+	if (which_stack == STACK_A)
+		while (n-- > 0)
+			do_ra(stack);
+	else if (which_stack == STACK_B)
+		while (n-- > 0)
+			do_rb(stack);
+}
+
+void	reverse_rotate_n_time(t_stack **stack, int n, int which_stack)
+{
+	if (which_stack == STACK_A)
+		while (n-- > 0)
+			do_rra(stack);
+	else if (which_stack == STACK_B)
+		while (n-- > 0)
+			do_rrb(stack);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pushings.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 21:14:17 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/10 21:48:41 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+void	rotate_and_push_a(t_stack **stack_a, t_stack **stack_b, int target)
+{
+	rotate_to_top_b(stack_b, target);
+	do_pa(stack_a, stack_b);
+}
+
+void	rotate_and_push_b(t_stack **stack_a, t_stack **stack_b, int target)
+{
+	rotate_to_top_a(stack_a, target);
+	do_pb(stack_a, stack_b);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rotations.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 21:19:54 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/21 14:10:56 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+// Will do rr since they both need to rotate, then ra or rb for the rest
+void	double_rotate(t_stack **a, t_stack **b, t_co *cost)
+{
+	int	both;
+
+	if (cost->a_rotations < cost->b_rotations)
+		both = cost->a_rotations;
+	else
+		both = cost->b_rotations;
+	while (both-- > 0)
+		do_rr(a, b);
+	while (cost->a_rotations-- > cost->b_rotations)
+		do_ra(a);
+	while (cost->b_rotations-- > cost->a_rotations)
+		do_rb(b);
+}
+
+// Will do rrr since they both need to reve rotate, then rra or rrb for the rest
+void	rev_double_rotate(t_stack **a, t_stack **b, t_co *cost)
+{
+	int	both;
+
+	if (!cost)
+		return ;
+	if (cost->a_rotations < cost->b_rotations)
+		both = cost->a_rotations;
+	else
+		both = cost->b_rotations;
+	while (both > 0)
+	{
+		do_rrr(a, b);
+		both--;
+	}
+	while (cost->a_rotations > cost->b_rotations)
+	{
+		do_rra(a);
+		cost->a_rotations--;
+	}
+	while (cost->b_rotations > cost->a_rotations)
+	{
+		do_rrb(b);
+		cost->b_rotations--;
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   searching.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 21:42:43 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/16 02:42:25 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+int	find_minimum(t_stack *stack)
+{
+	int	minimum;
+
+	if (!stack)
+		return (0);
+	minimum = stack->value;
+	while (stack)
+	{
+		if (stack->value < minimum)
+			minimum = stack->value;
+		stack = stack->next;
+	}
+	return (minimum);
+}
+
+int	find_maximum(t_stack *stack)
+{
+	int	maximum;
+
+	if (!stack)
+		return (0);
+	maximum = stack->value;
+	while (stack)
+	{
+		if (stack->value > maximum)
+			maximum = stack->value;
+		stack = stack->next;
+	}
+	return (maximum);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   smarts.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 21:56:25 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/16 02:45:15 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+void	push_min(t_stack **stack_a, t_stack **stack_b, int which)
+{
+	int	minimum;
+
+	if (which == STACK_A)
+	{
+		minimum = find_minimum(*stack_b);
+		rotate_and_push_a(stack_a, stack_b, minimum);
+	}
+	else if (which == STACK_B)
+	{
+		minimum = find_minimum(*stack_a);
+		rotate_and_push_b(stack_a, stack_b, minimum);
+	}
+}
+
+void	push_max(t_stack **stack_a, t_stack **stack_b, int which)
+{
+	int	maximum;
+
+	if (which == STACK_A)
+	{
+		maximum = find_maximum(*stack_b);
+		rotate_and_push_a(stack_a, stack_b, maximum);
+	}
+	else if (which == STACK_B)
+	{
+		maximum = find_maximum(*stack_a);
+		rotate_and_push_b(stack_a, stack_b, maximum);
+	}
+}
+
+void	push_closest_min_or_max(t_stack **stack_a, t_stack **stack_b, int which)
+{
+	int	len;
+	int	minimum;
+	int	maximum;
+
+	if (which == STACK_A)
+	{
+		len = stack_length(*stack_b);
+		minimum = find_minimum(*stack_b);
+		maximum = find_maximum(*stack_b);
+		if (len - stackfind(*stack_b, minimum) < stackfind(*stack_b, maximum))
+			rotate_and_push_b(stack_a, stack_b, minimum);
+		else
+			rotate_and_push_b(stack_a, stack_b, maximum);
+	}
+	if (which == STACK_B)
+	{
+		len = stack_length(*stack_a);
+		minimum = find_minimum(*stack_a);
+		maximum = find_maximum(*stack_a);
+		if (len - stackfind(*stack_a, minimum) < stackfind(*stack_a, maximum))
+			rotate_and_push_a(stack_a, stack_b, minimum);
+		else
+			rotate_and_push_a(stack_a, stack_b, maximum);
+	}
+}
+
+// Push dans b du plus petit au plus grand de la range
+void	push_range_to_b(t_stack **stack_a, t_stack **stack_b, int min, int max)
+{
+	int	tofind;
+
+	while (min < max)
+	{
+		tofind = stackfind(*stack_a, min);
+		if (tofind != -1)
+			rotate_and_push_b(stack_a, stack_b, tofind);
+	}
+}
+
+// Push dans a du plus petit au plus grand de la range
+void	push_range_to_a(t_stack **stack_a, t_stack **stack_b, int min, int max)
+{
+	int	tofind;
+
+	while (min < max)
+	{
+		tofind = stackfind(*stack_b, min);
+		if (tofind != -1)
+			rotate_and_push_a(stack_a, stack_b, tofind);
+	}
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   specifics.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 19:15:28 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/23 19:30:01 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+// Search the shortest way to rotate to top target
+void	rotate_to_top_a(t_stack **stack_a, int target)
+{
+	int	len;
+	int	placement;
+
+	len = stack_length(*stack_a);
+	placement = stackfind(*stack_a, target);
+	if (placement == -1)
+		return ;
+	if (placement < len / 2)
+		rotate_n_time(stack_a, placement, STACK_A);
+	else
+		reverse_rotate_n_time(stack_a, len - placement, STACK_A);
+}
+
+void	rotate_to_top_b(t_stack **stack_b, int target)
+{
+	int	len;
+	int	placement;
+
+	len = stack_length(*stack_b);
+	placement = stackfind(*stack_b, target);
+	if (placement == -1)
+		return ;
+	if (placement < len / 2)
+		rotate_n_time(stack_b, placement, STACK_B);
+	else
+		reverse_rotate_n_time(stack_b, len - placement, STACK_B);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   swaps.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 21:39:59 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/21 15:15:27 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+t_bool	swap_if_needed_a(t_stack *stack_a)
+{
+	if (stack_a->value < stack_a->next->value)
+		return (do_sa(stack_a), TRUE);
+	return (FALSE);
+}
+
+t_bool	swap_if_needed_b(t_stack *stack_b)
+{
+	if (stack_b->value < stack_b->next->value)
+		return (do_sb(stack_b), TRUE);
+	return (FALSE);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   do_rrr.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 16:00:05 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/23 18:48:08 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+int	do_rrr(t_stack **stack_a, t_stack **stack_b)
+{
+	if (stack_a && (*stack_a) && (*stack_a)->next)
+		sim_rra(stack_a);
+	if (stack_b && (*stack_b) && (*stack_b)->next)
+		sim_rrb(stack_b);
+	ft_printf("rrr\n");
+	return (1);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 15:12:55 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/23 16:57:01 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+// Take the first element at the top of b and put it at the top of a
+int	do_pa(t_stack **stack_a, t_stack **stack_b)
+{
+	t_stack	*temp;
+
+	if (!stack_b || !(*stack_b))
+		return (0);
+	temp = (*stack_b)->next;
+	stackadd_front(stack_a, *stack_b);
+	*stack_b = temp;
+	ft_printf("pa\n");
+	return (1);
+}
+
+// Take the first element at the top of a and put it at the top of b.
+int	do_pb(t_stack **stack_a, t_stack **stack_b)
+{
+	t_stack	*temp;
+
+	if (!stack_a || !(*stack_a))
+		return (0);
+	temp = (*stack_a)->next;
+	stackadd_front(stack_b, *stack_a);
+	*stack_a = temp;
+	ft_printf("pb\n");
+	return (1);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rotate.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 15:12:56 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/23 16:59:19 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+// Shift up all elements of stack a by 1.
+int	do_ra(t_stack **stack_a)
+{
+	t_stack	*temp;
+	t_stack	*last;
+
+	if (!stack_a || !(*stack_a) || !(*stack_a)->next)
+	{
+		ft_printf("error\n");
+		return (0);
+	}
+	temp = *stack_a;
+	*stack_a = (*stack_a)->next;
+	temp->next = NULL;
+	last = *stack_a;
+	while (last->next)
+		last = last->next;
+	last->next = temp;
+	ft_printf("ra\n");
+	return (1);
+}
+
+// Shift up all elements of stack b by 1.
+int	do_rb(t_stack **stack_b)
+{
+	t_stack	*temp;
+	t_stack	*last;
+
+	if (!stack_b || !(*stack_b) || !(*stack_b)->next)
+		return (0);
+	temp = *stack_b;
+	*stack_b = (*stack_b)->next;
+	temp->next = NULL;
+	last = *stack_b;
+	while (last->next)
+		last = last->next;
+	last->next = temp;
+	ft_printf("rb\n");
+	return (1);
+}
+
+// ra and rb at the same time.
+int	do_rr(t_stack **stack_a, t_stack **stack_b)
+{
+	if (stack_a && (*stack_a) && (*stack_a)->next)
+		do_ra(stack_a);
+	if (stack_b && (*stack_b) && (*stack_b)->next)
+		do_rb(stack_b);
+	return (1);
+}
+
+// Shift down all elements of stack a by 1.
+int	do_rra(t_stack **stack_a)
+{
+	t_stack	*temp;
+	t_stack	*before_last;
+
+	if (!stack_a || !(*stack_a) || !(*stack_a)->next)
+		return (-1);
+	before_last = *stack_a;
+	while (before_last->next->next)
+		before_last = before_last->next;
+	temp = before_last->next;
+	before_last->next = NULL;
+	temp->next = *stack_a;
+	*stack_a = temp;
+	ft_printf("rra\n");
+	return (1);
+}
+
+// Shift down all elements of stack b by 1.
+int	do_rrb(t_stack **stack_b)
+{
+	t_stack	*temp;
+	t_stack	*before_last;
+
+	if (!stack_b || !(*stack_b) || !(*stack_b)->next)
+		return (-1);
+	before_last = *stack_b;
+	while (before_last->next->next)
+		before_last = before_last->next;
+	temp = before_last->next;
+	before_last->next = NULL;
+	temp->next = *stack_b;
+	*stack_b = temp;
+	ft_printf("rrb\n");
+	return (1);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   do_rrr.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 16:00:05 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/23 18:49:08 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+int	sim_rrr(t_stack **stack_a, t_stack **stack_b)
+{
+	if (stack_a && (*stack_a) && (*stack_a)->next)
+		sim_rra(stack_a);
+	if (stack_b && (*stack_b) && (*stack_b)->next)
+		sim_rrb(stack_b);
+	return (1);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 15:12:55 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/23 16:57:59 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+// Take the first element at the top of b and put it at the top of a
+int	sim_pa(t_stack **stack_a, t_stack **stack_b)
+{
+	t_stack	*temp;
+
+	if (!stack_b || !(*stack_b))
+		return (0);
+	temp = (*stack_b)->next;
+	stackadd_front(stack_a, *stack_b);
+	*stack_b = temp;
+	return (1);
+}
+
+// Take the first element at the top of a and put it at the top of b.
+int	sim_pb(t_stack **stack_a, t_stack **stack_b)
+{
+	t_stack	*temp;
+
+	if (!stack_a || !(*stack_a))
+		return (0);
+	temp = (*stack_a)->next;
+	stackadd_front(stack_b, *stack_a);
+	*stack_a = temp;
+	return (1);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rotate.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 15:12:56 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/23 16:58:57 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+// Shift up all elements of stack a by 1.
+int	sim_ra(t_stack **stack_a)
+{
+	t_stack	*temp;
+	t_stack	*last;
+
+	if (!stack_a || !(*stack_a) || !(*stack_a)->next)
+	{
+		ft_printf("error\n");
+		return (-1);
+	}
+	temp = *stack_a;
+	*stack_a = (*stack_a)->next;
+	temp->next = NULL;
+	last = *stack_a;
+	while (last->next)
+		last = last->next;
+	last->next = temp;
+	return (1);
+}
+
+// Shift up all elements of stack b by 1.
+int	sim_rb(t_stack **stack_b)
+{
+	t_stack	*temp;
+	t_stack	*last;
+
+	if (!stack_b || !(*stack_b) || !(*stack_b)->next)
+		return (0);
+	temp = *stack_b;
+	*stack_b = (*stack_b)->next;
+	temp->next = NULL;
+	last = *stack_b;
+	while (last->next)
+		last = last->next;
+	last->next = temp;
+	return (1);
+}
+
+// ra and rb at the same time.
+int	sim_rr(t_stack **stack_a, t_stack **stack_b)
+{
+	if (stack_a && (*stack_a) && (*stack_a)->next)
+		do_ra(stack_a);
+	if (stack_b && (*stack_b) && (*stack_b)->next)
+		do_rb(stack_b);
+	return (1);
+}
+
+// Shift down all elements of stack a by 1.
+int	sim_rra(t_stack **stack_a)
+{
+	t_stack	*temp;
+	t_stack	*before_last;
+
+	if (!stack_a || !(*stack_a) || !(*stack_a)->next)
+		return (0);
+	before_last = *stack_a;
+	while (before_last->next->next)
+		before_last = before_last->next;
+	temp = before_last->next;
+	before_last->next = NULL;
+	temp->next = *stack_a;
+	*stack_a = temp;
+	return (1);
+}
+
+// Shift down all elements of stack b by 1.
+int	sim_rrb(t_stack **stack_b)
+{
+	t_stack	*temp;
+	t_stack	*before_last;
+
+	if (!stack_b || !(*stack_b) || !(*stack_b)->next)
+		return (0);
+	before_last = *stack_b;
+	while (before_last->next->next)
+		before_last = before_last->next;
+	temp = before_last->next;
+	before_last->next = NULL;
+	temp->next = *stack_b;
+	*stack_b = temp;
+	return (1);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   swap.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 15:12:58 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/23 16:59:33 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+// Swap the first 2 elements at the top of stack a.
+int	sim_sa(t_stack *stack_a)
+{
+	t_stack	*copy_a;
+	int		temp;
+
+	if (stack_a == NULL || stack_a->next == NULL)
+		return (0);
+	copy_a = stack_a->next;
+	temp = stack_a->value;
+	stack_a->value = copy_a->value;
+	copy_a->value = temp;
+	return (1);
+}
+
+// Swap the first 2 elements at the top of stack b.
+int	sim_sb(t_stack *stack_b)
+{
+	t_stack	*copy_b;
+	int		temp;
+
+	if (stack_b == NULL || stack_b->next == NULL)
+		return (0);
+	copy_b = stack_b->next;
+	temp = stack_b->value;
+	stack_b->value = copy_b->value;
+	copy_b->value = temp;
+	return (1);
+}
+
+int	sim_ss(t_stack *stack_a, t_stack *stack_b)
+{
+	sim_sa(stack_a);
+	sim_sb(stack_b);
+	return (1);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   swap.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 15:12:58 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/23 18:48:52 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+// Swap the first 2 elements at the top of stack a.
+int	do_sa(t_stack *stack_a)
+{
+	t_stack	*copy_a;
+	int		temp;
+
+	if (stack_a == NULL || stack_a->next == NULL)
+		return (0);
+	copy_a = stack_a->next;
+	temp = stack_a->value;
+	stack_a->value = copy_a->value;
+	copy_a->value = temp;
+	ft_printf("sa\n");
+	return (1);
+}
+
+// Swap the first 2 elements at the top of stack b.
+int	do_sb(t_stack *stack_b)
+{
+	t_stack	*copy_b;
+	int		temp;
+
+	if (stack_b == NULL || stack_b->next == NULL)
+		return (0);
+	copy_b = stack_b->next;
+	temp = stack_b->value;
+	stack_b->value = copy_b->value;
+	copy_b->value = temp;
+	ft_printf("sb\n");
+	return (1);
+}
+
+int	do_ss(t_stack *stack_a, t_stack *stack_b)
+{
+	sim_sa(stack_a);
+	sim_sb(stack_b);
+	ft_printf("ss\n");
+	return (1);
+}
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   updates_t_search.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/17 19:13:01 by mblanc            #+#    #+#             */
+/*   Updated: 2024/09/24 01:23:15 by mblanc           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
+
+t_search	*initialize_search(void)
+{
+	t_search	*search;
+
+	search = ft_safe_malloc(sizeof(t_search));
+	search->nbrs_list = NULL;
+	search->range = 10;
+	search->approx = 40;
+	search->highest_tryable = 100;
+	return (search);
+}
+
+/* Updates the t_search structure with new values
+and frees existing nbrs_list */
+void	update_search(t_search *search, int range, int approx, int highest)
+{
+	if (search->nbrs_list)
+	{
+		free_in_range(search->nbrs_list);
+		search->nbrs_list = NULL;
+	}
+	search->range = range;
+	search->approx = approx;
+	search->highest_tryable = highest;
+	search->in_range = 0;
+	search->best_target = 0;
+	search->nbrs_list = NULL;
+}
