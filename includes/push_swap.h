@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 18:02:21 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 13:44:07 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 16:12:47 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,4 +106,8 @@ t_stack		*stacknew(int value);
 void		print_t_cost(t_cost *cost);
 t_cost		*t_cost_dup(t_cost *original);
 void		print_tstack(t_stack *lst);
+int			verif_duplicate(t_stack *stack);
+int			check_all_number_limits(char **strs);
+int	validate_no_multiple_spaces(char *str);
+
 #endif

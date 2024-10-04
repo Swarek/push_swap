@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:12:49 by mblanc            #+#    #+#             */
-/*   Updated: 2024/09/24 03:06:55 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 16:12:40 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,70 @@ static t_stack	*create_stack_node(int value)
 {
 	t_stack	*new;
 
-	new = (t_stack *)malloc(sizeof(t_stack));
+	new = (t_stack *)ft_safe_malloc(sizeof(t_stack));
 	if (!new)
 		return (NULL);
 	new->value = value;
 	new->next = NULL;
 	return (new);
+}
+
+// Sign = 1 if no sign (positive), -1 if negative
+// int	verif_limit_nbr(char **strs)
+// {
+// 	int		i;
+// 	int		j;
+// 	int		sign;
+// 	long	nbr;
+
+// 	i = -1;
+// 	while (strs[++i])
+// 	{
+// 		j = 0;
+// 		nbr = 0;
+// 		sign = 1;
+// 		if (strs[i][j++] == '-')
+// 		{
+// 			j++;
+// 			sign = -1;
+// 		}
+// 		if (!ft_isdigit(strs[i][j]))
+// 			return (ft_error_msg("Several -"), -1);
+// 		while (strs[i][j] >= '0' && strs[i][j] <= '9')
+// 		{
+// 			if ((sign == 1 && (nbr * 10 + (strs[i][j] - '0') > INT_MAX)
+// 				|| (sign == -1 && -(nbr * 10 + (strs[i][j] - '0')) < INT_MIN)))
+// 				return (ft_error_msg("A number is in overflow"), -1);
+// 			nbr = nbr * 10 + (strs[i][j++] - '0');
+// 		}
+// 	}
+// 	return (0);
+// }
+
+int	ft_atoi(const char *str)
+{
+	int		sign;
+	long	result;
+	int		i;
+
+	sign = 1;
+	result = 0;
+	i = 0;
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v'
+		|| str[i] == '\f' || str[i] == '\r')
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		result = result * 10 + (str[i] - '0');
+		i++;
+	}
+	return (sign * result);
 }
 
 t_stack	*strings_to_stack(char **strs)
@@ -30,27 +88,32 @@ t_stack	*strings_to_stack(char **strs)
 	t_stack	*current;
 	int		i;
 	int		j;
+	int		debug;
 
 	i = 0;
-	head = create_stack_node(ft_atoi(strs[i++]));
+	debug = ft_atoi(strs[i++]);
+	head = create_stack_node(debug);
 	current = head;
 	while (strs[i])
 	{
 		j = 0;
 		while (strs[i][j])
 		{
-			if (!(strs[i][j] >= '0' && strs[i][j] <= '9'))
+			if (!ft_isdigit(strs[i][j]) && strs[i][j] != '-')
+			{
+				clear_stack(&head);
 				return (NULL);
+			}
 			j++;
 		}
-		current->next = create_stack_node(ft_atoi(strs[i]));
+		debug = ft_atoi(strs[i++]);
+		current->next = create_stack_node(debug);
 		current = current->next;
-		i++;
 	}
 	return (head);
 }
 
-static int	validate_no_multiple_spaces(char *str)
+int	validate_no_multiple_spaces(char *str)
 {
 	int	i;
 
@@ -65,6 +128,13 @@ static int	validate_no_multiple_spaces(char *str)
 			i++;
 		if (str[i] == ' ')
 			return (ft_error_msg("Several spaces between numbers"));
+		if (str[i] == '-')
+			i++ ;
+		if (str[i] != ' ' && str[i] != '\0' && !(str[i] >= '0'
+				&& str[i] <= '9') && str[i] != '-')
+		{
+			return (ft_error_msg("Wrong character in the string"));
+		}
 	}
 	if (str[i - 1] == ' ')
 		return (ft_error_msg("Space at the end of the string"));
@@ -79,7 +149,13 @@ t_stack	*parse_string_argument(char *arg)
 	if (validate_no_multiple_spaces(arg) == -1)
 		return (NULL);
 	strs = ft_split(arg, ' ');
+	if (!(*strs))
+		return (safe_free_all_strings(&strs), NULL);
+	if (check_all_number_limits(strs) == -1)
+		return (safe_free_all_strings(&strs), NULL);
 	head = strings_to_stack(strs);
 	safe_free_all_strings(&strs);
+	if (verif_duplicate(head))
+		return (ft_error_msg("Same numbers entered"), clear_stack(&head), NULL);
 	return (head);
 }
