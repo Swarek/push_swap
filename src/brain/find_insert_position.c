@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:55:46 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 03:11:45 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 03:24:21 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ static int	find_nbr_lower_closer(t_stack *stack, int nbr)
 	}
 	return (lower_closer);
 }
+
 static int	find_nbr_higher_closer(t_stack *stack, int nbr)
 {
 	int		higher_closer;
@@ -47,7 +48,7 @@ int	find_insert_position(t_stack *stack_b, int nbr)
 {
 	int		minimum;
 	int		maximum;
-	int		higher_closer;
+	int		lower_closer;
 	int		cost;
 
 	if (!stack_b)
@@ -55,19 +56,19 @@ int	find_insert_position(t_stack *stack_b, int nbr)
 	minimum = find_minimum(stack_b);
 	maximum = find_maximum(stack_b);
 	if (nbr < minimum)
-		return (stackfind(stack_b, minimum));
+		return (stackfind(stack_b, maximum));
 	else if (nbr < maximum)
 	{
-		higher_closer = find_nbr_higher_closer(stack_b, nbr);
-		if (higher_closer != -2)
-			return (stackfind(stack_b, higher_closer));
+		lower_closer = find_nbr_lower_closer(stack_b, nbr);
+		if (lower_closer != -2)
+			return (stackfind(stack_b, lower_closer));
 		else
 			return (stackfind(stack_b, minimum));
 	}
 	else if (nbr > maximum)
 	{
 		//ft_printf("\nfor nbr : %d and maximum : %d\n", nbr, maximum);
-		return (stackfind(stack_b, minimum));
+		return (stackfind(stack_b, maximum));
 	}
 }
 

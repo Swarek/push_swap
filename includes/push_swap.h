@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 18:02:21 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 00:23:40 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 03:30:15 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void		rotate_n_time(t_stack **stack, int n, int which_stack);
 void		reverse_rotate_n_time(t_stack **stack, int n, int which_stack);
 void		double_rotate(t_stack **a, t_stack **b, t_cost *cost);
 void		rev_double_rotate(t_stack **a, t_stack **b, t_cost *cost);
+void		do_which_rotation(t_stack **stack, int rotation, int which_stack);
 
 //Stack Manipulation / Simulation
 int			do_pa(t_stack **stack_a, t_stack **stack_b);
