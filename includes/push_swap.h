@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 18:02:21 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 07:25:57 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 09:24:06 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ t_stack		*parse_arguments(char **args);
 
 //Cost Management
 void		cost_sorting_nbr(t_stack *stack_a, t_stack *stack_b, int nbr, t_cost *c);
-void		cost_push_best(t_stack **a, t_stack **b, t_cost *cost);
 
 //Sorting Logic:
 void		push_back_to_a(t_stack **stack_a, t_stack **stack_b);

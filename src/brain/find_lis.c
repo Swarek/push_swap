@@ -6,9 +6,12 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 06:00:28 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 09:01:38 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 09:41:31 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+// Quand je reecrirai ce programme, penser a chercher si c'est possible de 
+// faire des swaps avec les nombres a cotes des LIS
 
 #include "push_swap.h"
 
