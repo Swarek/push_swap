@@ -6,29 +6,11 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:14:55 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 07:51:18 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 09:05:21 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
-// void	push_back_to_a(t_stack **stack_a, t_stack **stack_b)
-// {
-// 	int	max;
-
-// 	while (*stack_b)
-// 	{
-// 		max = find_maximum(*stack_b);
-// 		while ((*stack_b)->value != max)
-// 		{
-// 			if (stackfind(*stack_b, max) <= stack_length(*stack_b) / 2)
-// 				do_rb(stack_b);
-// 			else
-// 				do_rrb(stack_b);
-// 		}
-// 		do_pa(stack_a, stack_b);
-// 	}
-// }
 
 int	is_in_stack(t_stack *stack, int nbr)
 {
@@ -59,7 +41,6 @@ void	push_back_to_a(t_stack **stack_a, t_stack **stack_b)
 	int	max_b;
 	int	min_a;
 
-	//rotate_to_top_a(stack_a, max_a);
 	while (*stack_b)
 	{
 		max_a = find_maximum(*stack_a);

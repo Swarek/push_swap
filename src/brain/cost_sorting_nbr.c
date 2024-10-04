@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:40:32 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 05:54:17 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 09:19:14 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,23 +121,6 @@ int cost_rotate_to_top_nbr(t_stack *stack, int nbr)
 		return (len - pos);
 }
 
-int calculate_adjacency_bonus(t_stack *stack_b, int nbr)
-{
-	int	bonus = 0;
-	int	cost_to_bring_nbr_minus_1;
-	int	cost_to_bring_nbr_plus_1;
-
-	cost_to_bring_nbr_minus_1 = cost_rotate_to_top_nbr(stack_b, nbr - 1);
-	if (cost_to_bring_nbr_minus_1 != -1)
-	{
-		bonus += (10 - cost_to_bring_nbr_minus_1);
-	}
-	cost_to_bring_nbr_plus_1 = cost_rotate_to_top_nbr(stack_b, nbr + 1);
-	if (cost_to_bring_nbr_plus_1 != -1)
-		bonus += (10 - cost_to_bring_nbr_plus_1);
-	return (bonus);
-}
-
 // The goal is to find the best cost to push nbr in stack_b.
 void	cost_sorting_nbr(t_stack *stack_a, t_stack *stack_b, int nbr, t_cost *c)
 {
@@ -152,6 +135,5 @@ void	cost_sorting_nbr(t_stack *stack_a, t_stack *stack_b, int nbr, t_cost *c)
 	}
 	else
 		c->cost = c->a_rotations + c->b_rotations;
-	//c->cost -= calculate_adjacency_bonus(stack_b, nbr);
 	c->nbr = nbr;
 }

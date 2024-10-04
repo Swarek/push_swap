@@ -6,13 +6,13 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:33:06 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 08:59:45 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 09:14:55 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-static void	evaluate_firsts_nbrs(t_stack *a, t_stack *b, t_cost *c, int howmuch)
+static void	evaluate_all_nbrs(t_stack *a, t_stack *b, t_cost *c)
 {
 	int		i;
 	int		len;
@@ -21,44 +21,14 @@ static void	evaluate_firsts_nbrs(t_stack *a, t_stack *b, t_cost *c, int howmuch)
 
 	len = stack_length(a);
 	memo = t_cost_dup(c);
-	if (len < howmuch)
-		howmuch = len;
 	i = -1;
-	while (++i < howmuch)
-	{
-		value = get_nth_node(a, i)->value;
-		if (is_in_lis(value, c->lis, c->lis_length))
-			continue ;
-		cost_sorting_nbr(a, b, value, memo);
-		// ft_printf("Evaluating (Firsts) Number: %d, Cost: %d\n", value, memo->cost);
-		if (memo->cost < c->cost)
-			*c = *memo;
-	}
-	ft_safe_free((void **)&memo);
-}
-
-static void	evaluate_lasts_nbrs(t_stack *a, t_stack *b, t_cost *c, int howmuch)
-{
-	int		i;
-	int		len;
-	int 	value;
-	t_cost	*memo;
-
-	len = stack_length(a);
-	memo = t_cost_dup(c);
-	if (len < howmuch)
-	{
-		ft_safe_free((void **)&memo);
-		return ;
-	}
-	i = len - howmuch - 1;
 	while (++i < len)
 	{
 		value = get_nth_node(a, i)->value;
 		if (is_in_lis(value, c->lis, c->lis_length))
 			continue ;
 		cost_sorting_nbr(a, b, value, memo);
-		//ft_printf("Evaluating (Lasts) Number: %d, Cost: %d\n", value, memo->cost);
+		// ft_printf("Evaluating (Firsts) Number: %d, Cost: %d\n", value, memo->cost);
 		if (memo->cost < c->cost)
 			*c = *memo;
 	}
@@ -77,7 +47,7 @@ void	cost_push_best(t_stack **a, t_stack **b, t_cost *cost)
 	if (len <= 1)
 		return (ft_safe_free((void **)&cost), NULL);
 	cost->cost = INT_MAX;
-	evaluate_firsts_nbrs(*a, *b, cost, sqrt_int(len) + len / 10 + 10);
-	if (len > sqrt_int(len) + len / 10 + 10)
-		evaluate_lasts_nbrs(*a, *b, cost, sqrt_int(len) + len / 10 + 10);
+	evaluate_all_nbrs(*a, *b, cost);
+	// if (len > sqrt_int(len) + len / 2 + 10)
+	// 	evaluate_lasts_nbrs(*a, *b, cost, sqrt_int(len) + len / 2 + 10);
 }

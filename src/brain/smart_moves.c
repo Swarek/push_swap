@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:23:45 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 06:44:00 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 09:05:07 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,5 @@ void	doing_the_moves(t_stack **stack_a, t_stack **stack_b, t_cost *cost)
 void	smart_moves(t_stack **stack_a, t_stack **stack_b, t_cost *cost)
 {
 	cost_push_best(stack_a, stack_b, cost);
-	// ft_printf("Smart Moves\n");
-	// print_t_cost(cost);
 	doing_the_moves(stack_a, stack_b, cost);
-	// ft_safe_free((void **)&cost);
 }
