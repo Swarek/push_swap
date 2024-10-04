@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 14:29:19 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/01 10:58:08 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 01:46:25 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,13 +96,13 @@ void free_stack_memory(t_stack *stack) {
 
 // Test 1: Insertion sans rotation nécessaire
 void test_no_rotation_needed() {
-	int values_a[] = {2, 1, 3};
-	int values_b[] = {};
-	t_stack *stack_a = create_stack(values_a, 3);
-	t_stack *stack_b = create_stack(values_b, 0);
-	t_cost expected = {1, 1, ROTATE, 0, 1, 0}; // cost=2, nbr=1
+	int values_a[] = {5, 9, 10, 7, 8, 6, 4, 1};
+	int values_b[] = {2, 3};
+	t_stack *stack_a = create_stack(values_a, 8);
+	t_stack *stack_b = create_stack(values_b, 2);
+	t_cost expected = {0, 5, ROTATE, ROTATE, 0, 0}; // cost=2, nbr=1
 	t_cost actual = {0, 0, ROTATE, ROTATE, 0, 0};
-	cost_sorting_nbr(stack_a, stack_b, 1, &actual);
+	cost_sorting_nbr(stack_a, stack_b, 5, &actual);
 	assert_cost(expected, actual, "Test No Rotation Needed");
 	free_stack_memory(stack_a);
 	free_stack_memory(stack_b);
@@ -196,11 +196,25 @@ void test_simultaneous_rotations_different_direction() {
 void test_8() {
 	int values_a[] = {10, 3, 2, 6, 9, 5, 7};
 	int values_b[] = {4, 8, 1};
-	t_stack *stack_a = create_stack(values_a, 4);
+	t_stack *stack_a = create_stack(values_a, 7);
 	t_stack *stack_b = create_stack(values_b, 3);
-	t_cost expected = {1, 10, 0, ROTATE, 0, 1}; // cost=4, nbr=1
+	t_cost expected = {1, 10, 0, REVERSE_ROTATE, 0, 1}; // cost=4, nbr=1
 	t_cost actual = {0, 0, ROTATE, ROTATE, 0, 0};
 	cost_sorting_nbr(stack_a, stack_b, 10, &actual);
+	assert_cost(expected, actual, "Test Simultaneous Rotations Different Direction");
+	free_stack_memory(stack_a);
+	free_stack_memory(stack_b);
+}
+
+// Test 9: Test Perso
+void test_9() {
+	int values_a[] = {7, 8, 6, 4, 1};
+	int values_b[] = {10, 2, 3, 5, 9};
+	t_stack *stack_a = create_stack(values_a, 5);
+	t_stack *stack_b = create_stack(values_b, 5);
+	t_cost expected = {2, 4, REVERSE_ROTATE, REVERSE_ROTATE, 2, 2}; // cost=4, nbr=1
+	t_cost actual = {0, 0, ROTATE, ROTATE, 0, 0};
+	cost_sorting_nbr(stack_a, stack_b, 4, &actual);
 	assert_cost(expected, actual, "Test Simultaneous Rotations Different Direction");
 	free_stack_memory(stack_a);
 	free_stack_memory(stack_b);
@@ -209,6 +223,7 @@ void test_8() {
 int main_test_cost_sorting_nbr(void)
 {
 	printf("Starting Tests for cost_sorting_nbr...\n\n");
+	test_9();
 	test_no_rotation_needed();
 	test_rotate_a_up();
 	test_rotate_a_down();

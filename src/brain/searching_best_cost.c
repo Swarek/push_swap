@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:33:06 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/03 23:09:53 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 03:20:32 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	evaluate_firsts_nbrs(t_stack *a, t_stack *b, t_cost *c, int howmuch)
 	{
 		value = get_nth_node(a, i)->value;
 		cost_sorting_nbr(a, b, value, memo);
-		//ft_printf("Evaluating (Firsts) Number: %d, Cost: %d\n", value, memo->cost);
+		// ft_printf("Evaluating (Firsts) Number: %d, Cost: %d\n", value, memo->cost);
 		if (memo->cost < c->cost)
 			*c = *memo;
 		i++;
@@ -74,7 +74,6 @@ t_cost	*cost_push_best(t_stack **a, t_stack **b)
 	cost = ft_safe_malloc(sizeof(t_cost));
 	if (stack_length(*a) <= 1)
 		return (ft_safe_free((void **)&cost), NULL);
-	//ft_printf("TEST\n");
 	cost->cost = INT_MAX;
 	len = stack_length(*a);
 	evaluate_firsts_nbrs(*a, *b, cost, sqrt_int(len) + len / 10 + 10);

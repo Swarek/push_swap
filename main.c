@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 20:49:07 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/03 23:09:07 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 03:12:28 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	main(int argc, char **argv)
 	stack_b = NULL;
 	main_loop(&stack_a, &stack_b);
 	return (safe_all(&stack_a, &stack_b), 0);
-	//main_test_cost_sorting_nbr();
+	// main_test_cost_sorting_nbr();
 	//test_doing_the_moves();
 }
 

@@ -1,31 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   do_which_rotation.c                                :+:      :+:    :+:   */
+/*   print_tcost.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/17 19:19:51 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 03:18:32 by mblanc           ###   ########.fr       */
+/*   Created: 2024/10/04 00:23:20 by mblanc            #+#    #+#             */
+/*   Updated: 2024/10/04 00:23:30 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	do_which_rotation(t_stack **stack, int rotation, int which_stack)
+void	print_t_cost(t_cost *cost)
 {
-	if (which_stack == 0)
-	{
-		if (rotation == ROTATE)
-			do_ra(stack);
-		else
-			do_rra(stack);
-	}
-	else
-	{
-		if (rotation == ROTATE)
-			do_rb(stack);
-		else
-			do_rrb(stack);
-	}
+	if (!cost)
+		return ;
+	ft_printf("Cost Details:\n");
+	ft_printf("Cost: %d\n", cost->cost);
+	ft_printf("Number: %d\n", cost->nbr);
+	ft_printf("Doing What A: %d\n", cost->doing_what_a);
+	ft_printf("Doing What B: %d\n", cost->doing_what_b);
+	ft_printf("A Rotations: %d\n", cost->a_rotations);
+	ft_printf("B Rotations: %d\n", cost->b_rotations);
 }
