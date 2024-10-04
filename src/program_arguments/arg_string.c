@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:12:49 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 16:12:40 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 16:18:39 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ int	validate_no_multiple_spaces(char *str)
 
 	i = 0;
 	if (str[0] == ' ')
-		return (ft_error_msg("Space at the beggining of the string"));
+		return (ft_error_msg(""));
 	while (str[i])
 	{
 		while (str[i] >= '0' && str[i] <= '9')
@@ -127,17 +127,17 @@ int	validate_no_multiple_spaces(char *str)
 		if (str[i] == ' ')
 			i++;
 		if (str[i] == ' ')
-			return (ft_error_msg("Several spaces between numbers"));
+			return (ft_error_msg(""));
 		if (str[i] == '-')
 			i++ ;
 		if (str[i] != ' ' && str[i] != '\0' && !(str[i] >= '0'
 				&& str[i] <= '9') && str[i] != '-')
 		{
-			return (ft_error_msg("Wrong character in the string"));
+			return (ft_error_msg(""));
 		}
 	}
 	if (str[i - 1] == ' ')
-		return (ft_error_msg("Space at the end of the string"));
+		return (ft_error_msg(""));
 	return (0);
 }
 
@@ -156,6 +156,6 @@ t_stack	*parse_string_argument(char *arg)
 	head = strings_to_stack(strs);
 	safe_free_all_strings(&strs);
 	if (verif_duplicate(head))
-		return (ft_error_msg("Same numbers entered"), clear_stack(&head), NULL);
+		return (ft_error_msg(""), clear_stack(&head), NULL);
 	return (head);
 }

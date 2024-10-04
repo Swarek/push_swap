@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 16:03:58 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 16:08:52 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 16:18:57 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,16 @@ static int	verif_limit_str(char *str)
 		j++;
 	}
 	if (!ft_isdigit(str[j]))
-		return (ft_error_msg("Several '-'"), -1);
+		return (ft_error_msg(""), -1);
 	while (str[j] >= '0' && str[j] <= '9')
 	{
 		if ((sign == 1 && (nbr * 10 + (str[j] - '0') > INT_MAX)
 				|| (sign == -1 && -(nbr * 10 + (str[j] - '0')) < INT_MIN)))
-			return (ft_error_msg("A number is in overflow"), -1);
+			return (ft_error_msg(""), -1);
 		nbr = nbr * 10 + (str[j++] - '0');
 	}
 	if (str[j] != '\0')
-		return (ft_error_msg("'-' in the middle of a number"), -1);
+		return (ft_error_msg(""), -1);
 	return (0);
 }
 

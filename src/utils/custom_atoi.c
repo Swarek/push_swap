@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 14:36:08 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 14:36:31 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 16:19:16 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ int	custom_atoi(const char *str)
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		if (sign == 1 && (result > (INT_MAX / 10)))
-			return (ft_error_msg("A number is above INT_MAX"), -1);
+			return (ft_error_msg(""), -1);
 		if (sign == -1 && (result > (-INT_MIN / 10)))
-			return (ft_error_msg("A number is below INT_MIN"), -1);
+			return (ft_error_msg(""), -1);
 		result = result * 10 + (str[i] - '0');
 		i++;
 	}

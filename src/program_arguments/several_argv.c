@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 14:35:27 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 16:13:51 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 16:19:04 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,6 @@ t_stack	*parse_arguments(char **args)
 		return (NULL);
 	head = strings_to_stack(args);
 	if (verif_duplicate(head))
-		return (ft_error_msg("Same numbers entered"), clear_stack(&head), NULL);
+		return (ft_error_msg(""), clear_stack(&head), NULL);
 	return (head);
 }

@@ -26,7 +26,7 @@ static int	has_duplicate_numbers(t_stack *stack_a)
 		{	
 			if (compared_stack->value == stack_a->value
 				&& compared_stack != stack_a)
-				return (ft_error_msg("Same numbers entered"));
+				return (ft_error_msg(""));
 			compared_stack = compared_stack->next;
 		}
 		stack_a = stack_a->next;
