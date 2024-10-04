@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:14:55 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 09:05:21 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 13:45:24 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,13 @@ int	main_loop(t_stack **stack_a, t_stack **stack_b)
 	t_cost		*cost;
 
 	cost = ft_safe_malloc(sizeof(t_cost));
-	cost->lis = find_lis(*stack_a, &(cost->lis_length));
 	*stack_b = NULL;
-	while (stack_length(*stack_a) > cost->lis_length)
+	while (stack_length(*stack_a) > 3)
 	{
 		smart_moves(stack_a, stack_b, cost);
 	}
 	push_back_to_a(stack_a, stack_b);
 	clear_stack(stack_b);
+	ft_safe_free((void **)&cost);
 	return (0);
 }

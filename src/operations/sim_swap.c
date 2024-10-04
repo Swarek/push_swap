@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   swap.c                                             :+:      :+:    :+:   */
+/*   sim_swap.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 15:12:58 by mblanc            #+#    #+#             */
-/*   Updated: 2024/09/23 16:59:33 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 12:28:19 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,5 @@ int	sim_sb(t_stack *stack_b)
 	temp = stack_b->value;
 	stack_b->value = copy_b->value;
 	copy_b->value = temp;
-	return (1);
-}
-
-int	sim_ss(t_stack *stack_a, t_stack *stack_b)
-{
-	sim_sa(stack_a);
-	sim_sb(stack_b);
 	return (1);
 }

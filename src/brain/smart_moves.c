@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:33:06 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 09:27:14 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 13:42:06 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ static void	cost_push_best(t_stack *a, t_stack *b, t_cost *c)
 	while (++i < len)
 	{
 		value = get_nth_node(a, i)->value;
-		if (is_in_lis(value, c->lis, c->lis_length))
-			continue ;
+		// if (is_in_lis(value, c->lis, c->lis_length))
+		// 	continue ;
 		cost_sorting_nbr(a, b, value, memo);
 		if (memo->cost < c->cost)
 			*c = *memo;
@@ -89,17 +89,24 @@ void	smart_moves(t_stack **stack_a, t_stack **stack_b, t_cost *cost)
 	if (!cost)
 		return ;
 	cost_push_best(*stack_a, *stack_b, cost);
-	if (cost->doing_what_a == ROTATE && cost->doing_what_b == ROTATE)
-		double_rotate(stack_a, stack_b, cost);
-	else if (cost->doing_what_a == REVERSE_ROTATE
-		&& cost->doing_what_b == REVERSE_ROTATE)
-		rev_double_rotate(stack_a, stack_b, cost);
-	else
+	if (cost->doing_what_a == cost->doing_what_b)
 	{
-		while (cost->a_rotations-- > 0)
-			do_which_rotation(stack_a, cost->doing_what_a, 0);
-		while (cost->b_rotations-- > 0)
-			do_which_rotation(stack_b, cost->doing_what_b, 1);
+		same_doing_what(stack_a, stack_b, cost);
+		return ;
+	}
+	while (cost->a_rotations-- > 0)
+	{
+		if (cost->doing_what_a == ROTATE)
+			do_ra(stack_a);
+		else
+			do_rra(stack_a);
+	}
+	while (cost->b_rotations-- > 0)
+	{
+		if (cost->doing_what_b == ROTATE)
+			do_rb(stack_b);
+		else
+			do_rrb(stack_b);
 	}
 	do_pb(stack_a, stack_b);
 }

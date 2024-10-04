@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rotations.c                                        :+:      :+:    :+:   */
+/*   double_rotations.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 21:19:54 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/03 23:08:08 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 12:53:36 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
 // Will do rr since they both need to rotate, then ra or rb for the rest
-void	double_rotate(t_stack **a, t_stack **b, t_cost *cost)
+static void	double_rotate(t_stack **a, t_stack **b, t_cost *cost)
 {
 	int	both;
 
@@ -34,7 +34,7 @@ void	double_rotate(t_stack **a, t_stack **b, t_cost *cost)
 }
 
 // Will do rrr since they both need to reve rotate, then rra or rrb for the rest
-void	rev_double_rotate(t_stack **a, t_stack **b, t_cost *cost)
+static void	rev_double_rotate(t_stack **a, t_stack **b, t_cost *cost)
 {
 	int	both;
 
@@ -59,4 +59,33 @@ void	rev_double_rotate(t_stack **a, t_stack **b, t_cost *cost)
 		do_rrb(b);
 		cost->b_rotations--;
 	}
+}
+
+void	same_doing_what(t_stack **stack_a, t_stack **stack_b, t_cost *cost)
+{
+	if (cost->doing_what_a == ROTATE)
+		double_rotate(stack_a, stack_b, cost);
+	else
+		rev_double_rotate(stack_a, stack_b, cost);
+	do_pb(stack_a, stack_b);
+}
+
+void	rotate_n_time(t_stack **stack, int n, int which_stack)
+{
+	if (which_stack == STACK_A)
+		while (n-- > 0)
+			do_ra(stack);
+	else if (which_stack == STACK_B)
+		while (n-- > 0)
+			do_rb(stack);
+}
+
+void	reverse_rotate_n_time(t_stack **stack, int n, int which_stack)
+{
+	if (which_stack == STACK_A)
+		while (n-- > 0)
+			do_rra(stack);
+	else if (which_stack == STACK_B)
+		while (n-- > 0)
+			do_rrb(stack);
 }

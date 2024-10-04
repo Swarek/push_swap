@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 20:49:07 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 07:10:32 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 12:24:23 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,6 @@ void	print_tstack(t_stack *lst)
 		lst = lst->next;
 	}
 }
-
-// void	test(t_stack **stack_a, t_stack **stack_b)
-// {
-// 	// t_search	*search;
-// 	// t_cost		*cost;
-
-// 	test_best_ranges(stack_a);
-// 	// //cost = calculate_cost_to_top(*stack_a, 13);
-// 	// //free(cost);
-// }
 
 void	safe_all(t_stack **stack_a, t_stack **stack_b)
 {
@@ -93,10 +83,4 @@ int	main(int argc, char **argv)
 	else
 		ft_printf("KO\n");
 	return (safe_all(&stack_a, &stack_b), 0);
-	// test_lis(argc, argv);
-	// main_test_cost_sorting_nbr();
-	//test_doing_the_moves();
 }
-
-// ft_printf("HELLO\n\n\n\n\Voici stack_aaaaa : ");
-// 	print_tstack(stack_a);
