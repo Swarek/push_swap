@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:55:46 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 03:24:21 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 05:15:20 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +26,6 @@ static int	find_nbr_lower_closer(t_stack *stack, int nbr)
 		stack = stack->next;
 	}
 	return (lower_closer);
-}
-
-static int	find_nbr_higher_closer(t_stack *stack, int nbr)
-{
-	int		higher_closer;
-
-	if (!stack->next)
-		return (-1);
-	higher_closer = -1;
-	while (stack)
-	{
-		if (stack->value > nbr && (higher_closer == -1 || stack->value < higher_closer))
-			higher_closer = stack->value;
-		stack = stack->next;
-	}
-	return (higher_closer);
 }
 
 int	find_insert_position(t_stack *stack_b, int nbr)

@@ -6,22 +6,72 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:14:55 by mblanc            #+#    #+#             */
-/*   Updated: 2024/09/24 19:03:24 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 07:51:18 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	push_back_to_a(t_stack **stack_a, t_stack **stack_b)
+// void	push_back_to_a(t_stack **stack_a, t_stack **stack_b)
+// {
+// 	int	max;
+
+// 	while (*stack_b)
+// 	{
+// 		max = find_maximum(*stack_b);
+// 		while ((*stack_b)->value != max)
+// 		{
+// 			if (stackfind(*stack_b, max) <= stack_length(*stack_b) / 2)
+// 				do_rb(stack_b);
+// 			else
+// 				do_rrb(stack_b);
+// 		}
+// 		do_pa(stack_a, stack_b);
+// 	}
+// }
+
+int	is_in_stack(t_stack *stack, int nbr)
+{
+	while (stack)
+	{
+		if (stack->value == nbr)
+			return (1);
+		stack = stack->next;
+	}
+	return (0);
+}
+
+int	min_sorted_from_high(t_stack *stack)
 {
 	int	max;
+	int	current;
 
+	max = find_maximum(stack);
+	current = max;
+	while (is_in_stack(stack, current))
+		current = current - 1;
+	return (current + 1);
+}
+
+void	push_back_to_a(t_stack **stack_a, t_stack **stack_b)
+{
+	int	max_a;
+	int	max_b;
+	int	min_a;
+
+	//rotate_to_top_a(stack_a, max_a);
 	while (*stack_b)
 	{
-		max = find_maximum(*stack_b);
-		while ((*stack_b)->value != max)
+		max_a = find_maximum(*stack_a);
+		min_a = find_minimum(*stack_a);
+		max_b = find_maximum(*stack_b);
+		if (max_b > max_a)
+			rotate_to_top_a(stack_a, min_a);
+		else
+			rotate_to_top_a(stack_a, min_sorted_from_high(*stack_a));
+		while ((*stack_b)->value != max_b)
 		{
-			if (stackfind(*stack_b, max) <= stack_length(*stack_b) / 2)
+			if (stackfind(*stack_b, max_b) <= stack_length(*stack_b) / 2)
 				do_rb(stack_b);
 			else
 				do_rrb(stack_b);
@@ -30,36 +80,18 @@ void	push_back_to_a(t_stack **stack_a, t_stack **stack_b)
 	}
 }
 
-void	update_highest_tryable(t_stack **stack_b, t_search *search)
-{
-	int	current_length;
-
-	if (*stack_b)
-	{
-		current_length = stack_length(*stack_b);
-		if (current_length / 3 < search->highest_tryable
-			&& search->highest_tryable <= 500)
-			search->highest_tryable += 10;
-	}
-}
-
 int	main_loop(t_stack **stack_a, t_stack **stack_b)
 {
-	t_search	*find;
+	t_cost		*cost;
 
-	find = initialize_search();
+	cost = ft_safe_malloc(sizeof(t_cost));
+	cost->lis = find_lis(*stack_a, &(cost->lis_length));
 	*stack_b = NULL;
-	while (*stack_a)
+	while (stack_length(*stack_a) > cost->lis_length)
 	{
-		update_search(find, find->range, find->approx, find->highest_tryable);
-		smart_moves(stack_a, stack_b);
-		update_highest_tryable(stack_b, find);
-		if (!stack_a || !(*stack_a) || !(*stack_a)->next)
-			break ;
+		smart_moves(stack_a, stack_b, cost);
 	}
 	push_back_to_a(stack_a, stack_b);
-	//free_in_range(find->nbrs_list);
 	clear_stack(stack_b);
-	ft_safe_free((void **)&find);
 	return (0);
 }

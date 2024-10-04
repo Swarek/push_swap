@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 20:49:07 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 03:12:28 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 07:10:32 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,19 @@ void	safe_all(t_stack **stack_a, t_stack **stack_b)
 	}
 }
 
+int is_sorted(t_stack *stack)
+{
+	if (!stack)
+		return (1);
+	while (stack->next)
+	{
+		if (stack->value > stack->next->value)
+			return (0);
+		stack = stack->next;
+	}
+	return (1);
+}
+
 int	main(int argc, char **argv)
 {
 	t_stack	*stack_a;
@@ -75,7 +88,12 @@ int	main(int argc, char **argv)
 	numberize_stack_numbers(stack_a);
 	stack_b = NULL;
 	main_loop(&stack_a, &stack_b);
+	if (is_sorted(stack_a))
+		ft_printf("OK\n");
+	else
+		ft_printf("KO\n");
 	return (safe_all(&stack_a, &stack_b), 0);
+	// test_lis(argc, argv);
 	// main_test_cost_sorting_nbr();
 	//test_doing_the_moves();
 }

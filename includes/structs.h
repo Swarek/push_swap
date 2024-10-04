@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 15:31:18 by mblanc            #+#    #+#             */
-/*   Updated: 2024/09/24 17:20:37 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 06:21:37 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ typedef struct s_cost
 {
 	int	cost;
 
+	int	*lis;
+	int	lis_length;
 	int	nbr;
 	int	doing_what_a;
 	int	doing_what_b;

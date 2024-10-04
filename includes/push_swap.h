@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 18:02:21 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 03:30:15 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 07:25:57 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 # define PUSH 2
 
 # define INT_MAX 2147483647
-
+# define INT_MIN -2147483648
 // Tests
 int			main_test_cost_sorting_nbr(void);
 
@@ -42,7 +42,7 @@ t_stack		*parse_arguments(char **args);
 
 //Cost Management
 void		cost_sorting_nbr(t_stack *stack_a, t_stack *stack_b, int nbr, t_cost *c);
-t_cost		*cost_push_best(t_stack **a, t_stack **b);
+void		cost_push_best(t_stack **a, t_stack **b, t_cost *cost);
 
 //Sorting Logic:
 void		push_back_to_a(t_stack **stack_a, t_stack **stack_b);
@@ -85,15 +85,18 @@ int			sim_pa(t_stack **stack_a, t_stack **stack_b);
 int			sim_pb(t_stack **stack_a, t_stack **stack_b);
 
 // For tests
-t_stack *create_stack(int *values, int size);
+//t_stack	*create_stack(int *values, int size);
+int	test_lis(int argc, char **argv);
 
 // Smart Moves
-void		smart_moves(t_stack **stack_a, t_stack **stack_b);
+void		smart_moves(t_stack **stack_a, t_stack **stack_b, t_cost *cost);
 void		doing_the_moves(t_stack **stack_a, t_stack **stack_b, t_cost *cost);
 void		push_min(t_stack **stack_a, t_stack **stack_b, int which);
 void		push_max(t_stack **stack_a, t_stack **stack_b, int which);
 void		push_range_to_b(t_stack **stack_a, t_stack **stack_b, int min, int max);
 void		push_range_to_a(t_stack **stack_a, t_stack **stack_b, int min, int max);
+int			*find_lis(t_stack *stack_a, int *lis_length);
+void	push_back_to_a(t_stack **stack_a, t_stack **stack_b);
 
 // Search & Utility Functions
 int			find_minimum(t_stack *stack);
@@ -110,6 +113,9 @@ void		numberize_stack_numbers(t_stack *stack_a);
 void		clear_stack(t_stack **stack);
 t_stack		*stackdup(t_stack *lst);
 t_stack		*stacknew(int value);
-void	print_t_cost(t_cost *cost);
-
+void		print_t_cost(t_cost *cost);
+int			is_in_lis(int nbr, int *lis, int lis_length);
+void		print_lis(int *lis, int lis_length);
+t_cost		*t_cost_dup(t_cost *original);
+void		print_tstack(t_stack *lst);
 #endif
