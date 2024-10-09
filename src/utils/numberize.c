@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   normalize_stack_numbers.c                                        :+:      :+:    :+:   */
+/*   numberize.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/10 16:23:00 by mblanc            #+#    #+#             */
-/*   Updated: 2024/09/16 02:41:10 by mblanc           ###   ########.fr       */
+/*   Created: 2024/10/04 18:34:44 by mblanc            #+#    #+#             */
+/*   Updated: 2024/10/04 18:34:49 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-// Verifier avant si certains sont egaux
+// Verify if there are duplicate numbers in the stack
 static int	has_duplicate_numbers(t_stack *stack_a)
 {
 	t_stack	*compared_stack;

@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 15:12:58 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 12:23:47 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 18:32:25 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,3 @@ int	do_ss(t_stack *stack_a, t_stack *stack_b)
 	ft_printf("ss\n");
 	return (1);
 }
-

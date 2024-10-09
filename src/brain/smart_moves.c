@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:33:06 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 13:42:06 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/09 17:50:06 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,18 +65,19 @@ static void	cost_push_best(t_stack *a, t_stack *b, t_cost *c)
 	t_cost	*memo;
 
 	if (!a)
-		return (NULL);
+		return ;
 	len = stack_length(a);
 	if (len <= 1)
-		return (ft_safe_free((void **)&c), NULL);
+	{
+		ft_safe_free((void **)&c);
+		return ;
+	}
 	c->cost = INT_MAX;
 	memo = t_cost_dup(c);
 	i = -1;
 	while (++i < len)
 	{
 		value = get_nth_node(a, i)->value;
-		// if (is_in_lis(value, c->lis, c->lis_length))
-		// 	continue ;
 		cost_sorting_nbr(a, b, value, memo);
 		if (memo->cost < c->cost)
 			*c = *memo;

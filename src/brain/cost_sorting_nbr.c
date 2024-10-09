@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 01:40:32 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 09:19:57 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 18:36:39 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@ static void	rotation_a_for_nbr_to_top(t_stack *stack_a, int nbr, t_cost *c)
 	}
 }
 
-// The goal is to find the best cost to push nbr in stack_b.
-void	cost_sorting_nbr(t_stack *stack_a, t_stack *stack_b, int nbr, t_cost *c)
+// The goal is to find the best cost to push nbr in b.
+void	cost_sorting_nbr(t_stack *a, t_stack *b, int nbr, t_cost *c)
 {
-	rotation_a_for_nbr_to_top(stack_a, nbr, c);
-	rotation_b_for_insertion_nbr(stack_b, c, nbr);
+	rotation_a_for_nbr_to_top(a, nbr, c);
+	rotation_b_for_insertion_nbr(b, c, nbr);
 	if (c->doing_what_a == c->doing_what_b)
 	{
 		if (c->a_rotations > c->b_rotations)

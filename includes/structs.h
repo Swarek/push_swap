@@ -6,13 +6,12 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 15:31:18 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 12:25:39 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 18:37:35 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STRUCTS_H
 # define STRUCTS_H
-
 
 // cost = price to go to nbr in a and rotate b to push it.
 typedef struct s_cost

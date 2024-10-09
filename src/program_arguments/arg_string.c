@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:12:49 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 16:18:39 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 18:36:07 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,38 +23,6 @@ static t_stack	*create_stack_node(int value)
 	new->next = NULL;
 	return (new);
 }
-
-// Sign = 1 if no sign (positive), -1 if negative
-// int	verif_limit_nbr(char **strs)
-// {
-// 	int		i;
-// 	int		j;
-// 	int		sign;
-// 	long	nbr;
-
-// 	i = -1;
-// 	while (strs[++i])
-// 	{
-// 		j = 0;
-// 		nbr = 0;
-// 		sign = 1;
-// 		if (strs[i][j++] == '-')
-// 		{
-// 			j++;
-// 			sign = -1;
-// 		}
-// 		if (!ft_isdigit(strs[i][j]))
-// 			return (ft_error_msg("Several -"), -1);
-// 		while (strs[i][j] >= '0' && strs[i][j] <= '9')
-// 		{
-// 			if ((sign == 1 && (nbr * 10 + (strs[i][j] - '0') > INT_MAX)
-// 				|| (sign == -1 && -(nbr * 10 + (strs[i][j] - '0')) < INT_MIN)))
-// 				return (ft_error_msg("A number is in overflow"), -1);
-// 			nbr = nbr * 10 + (strs[i][j++] - '0');
-// 		}
-// 	}
-// 	return (0);
-// }
 
 int	ft_atoi(const char *str)
 {
@@ -100,10 +68,7 @@ t_stack	*strings_to_stack(char **strs)
 		while (strs[i][j])
 		{
 			if (!ft_isdigit(strs[i][j]) && strs[i][j] != '-')
-			{
-				clear_stack(&head);
-				return (NULL);
-			}
+				return (clear_stack(&head), NULL);
 			j++;
 		}
 		debug = ft_atoi(strs[i++]);

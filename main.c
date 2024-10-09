@@ -6,13 +6,12 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 20:49:07 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 16:58:26 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/04 18:58:48 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-//----
 void	print_tstack(t_stack *lst)
 {
 	while (lst != NULL)
@@ -36,7 +35,7 @@ void	safe_all(t_stack **stack_a, t_stack **stack_b)
 	}
 }
 
-int is_sorted(t_stack *stack)
+int	is_sorted(t_stack *stack)
 {
 	if (!stack)
 		return (1);
@@ -67,7 +66,8 @@ int	main(int argc, char **argv)
 		return (safe_all(&stack_a, &stack_b), 0);
 	len = stack_length(stack_a);
 	if (len <= 5)
-		return (sort_small_nbrs(&stack_a, &stack_b, len));
+		return (sort_small_nbrs(&stack_a, &stack_b, len),
+			safe_all(&stack_a, &stack_b), 0);
 	numberize_stack_numbers(stack_a);
 	stack_b = NULL;
 	main_loop(&stack_a, &stack_b);
