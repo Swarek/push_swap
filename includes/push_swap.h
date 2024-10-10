@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 18:02:21 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/04 19:00:30 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/10 22:13:48 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,5 +107,11 @@ int			validate_no_multiple_spaces(char *str);
 void		sort_small_nbrs(t_stack **stack_a, t_stack **stack_b, int len);
 void		rotate_and_push_b(t_stack **stack_a, t_stack **stack_b, int target);
 void		stackadd_front(t_stack **alst, t_stack *new);
+int			ft_strcmp(const char *s1, const char *s2);
+int			is_sorted(t_stack *stack);
+
+// Bonus
+
+int			checker(t_stack **stack_a);
 
 #endif

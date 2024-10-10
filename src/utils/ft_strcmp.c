@@ -1,30 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_error_msg.c                                     :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/04 12:32:54 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/10 21:46:13 by mblanc           ###   ########.fr       */
+/*   Created: 2024/10/10 21:26:51 by mblanc            #+#    #+#             */
+/*   Updated: 2024/10/10 21:27:05 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "push_swap.h"
 
-int	ft_error_msg(const char *msg)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	if (msg)
+	while (*s1 && (*s1 == *s2))
 	{
-		write(2, BOLD_COLOR_RED, 8);
-		write(2, "Error", 5);
-		while (*msg)
-		{
-			write(2, msg, 1);
-			msg++;
-		}
-		write(2, RESET_COLOR, 4);
-		write(2, "\n", 1);
+		s1++;
+		s2++;
 	}
-	return (-1);
+	return (*(unsigned char *)s1 - *(unsigned char *)s2);
 }
