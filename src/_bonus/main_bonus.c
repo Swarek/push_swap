@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/02 20:49:07 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/12 15:11:10 by mblanc           ###   ########.fr       */
+/*   Created: 2024/10/12 15:04:00 by mblanc            #+#    #+#             */
+/*   Updated: 2024/10/12 15:04:35 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,8 @@ int	main(int argc, char **argv)
 		stack_a = parse_string_argument(argv[1]);
 	else
 		stack_a = parse_arguments(&argv[1]);
-	if (is_sorted(stack_a))
-		return (safe_all(&stack_a, &stack_b), 0);
-	len = stack_length(stack_a);
-	if (len <= 5)
-		return (sort_small_nbrs(&stack_a, &stack_b, len),
-			safe_all(&stack_a, &stack_b), 0);
-	numberize_stack_numbers(stack_a);
-	stack_b = NULL;
-	main_loop(&stack_a, &stack_b);
+	if (stack_a == NULL)
+		exit(EXIT_FAILURE);
+	checker(&stack_a);
 	return (safe_all(&stack_a, &stack_b), 0);
 }

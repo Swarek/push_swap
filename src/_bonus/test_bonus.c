@@ -6,7 +6,7 @@
 /*   By: mblanc <mblanc@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 20:47:50 by mblanc            #+#    #+#             */
-/*   Updated: 2024/10/10 22:13:37 by mblanc           ###   ########.fr       */
+/*   Updated: 2024/10/12 15:14:00 by mblanc           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,10 +101,10 @@ int	checker(t_stack **stack_a)
 	i = 0;
 	while (operations[i])
 	{
-		do_operation(operations[i], &stack_a, &stack_b);
+		do_operation(operations[i], stack_a, &stack_b);
 		i++;
 	}
-	if (is_sorted(stack_a) && !stack_b)
+	if (is_sorted(*stack_a) && !stack_b)
 		return (ft_printf("OK\n"), safe_free_all_strings(&operations), TRUE);
 	return (ft_printf("KO\n"), safe_free_all_strings(&operations), FALSE);
 }
